@@ -1,0 +1,25 @@
+List of changes:
+
+1. Started project, added index page.
+2. Added data directory & text files.
+3. Created links on home page to text files.
+4. Display dynamically generated HTML from .md files.
+5. Create edit links & edit forms.
+6. Add ability to edit files.
+7. Add css file. Change messages appearance & font.
+8. Create layout.erb; add messages to layout
+9. Add ability to add new files.
+10. Check for valid file name format w/extension.
+11. Add delete file functionality.
+12. Create ability to log in / out of app.
+13. Update tests using session[:key].
+14. Restrict certain actions to logged in users.
+15. Add user management file for managing many users.
+16. Allow users to submit requests if they don't exist.
+17. Implement bcrypt() hash password storage & authentication.
+18. 
+      
+      
+      
+      
+      

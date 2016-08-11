@@ -1,0 +1,40 @@
+body {
+  font-family: sans-serif;
+  padding: 1em;
+}
+
+.alert {
+  background: #ffff99;
+  padding: 10px;
+}
+
+li .delete {
+  right: 20px;
+  width: 24px;
+  height: 27px;
+  margin: -12px 0 0 0;
+  opacity: 0.4;
+  background: transparent url("../images/icon_delete.png") 0 3px no-repeat;
+  display: inline-block;
+}
+
+li .delete [type="submit"] {
+  width: 24px;
+  height: 24px;
+  color: transparent;
+  background-color: transparent;
+  cursor: pointer;
+  border: none; 
+}
+
+li .delete:hover {
+  opacity: 1; 
+}
+
+.logged {
+  display: inline;
+}
+
+.button-inline {
+  display: inline-block;
+}

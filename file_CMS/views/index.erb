@@ -1,0 +1,39 @@
+<% if session[:signed_in] %>
+
+  <ul>
+    <% @files.each do |name| %>
+      <li>
+        <a href="/<%= name %>"><%= name %></a>
+        <a href="/<%= name %>/edit">edit -></a>
+        
+        <form action="/<%= name %>/delete" method="post" class="delete">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+    <% end %>
+  </ul>
+  
+  <p><a href="/new">+ New Document</a></p>
+  
+  <div class="logged">
+    <form action="/sign-out" method="post">
+      <p><em>Logged in as <%= session[:username] %></em>
+      <button type="submit">Sign Out</button>
+    </form>
+  </div>
+  
+<% else %>
+  <h3>You must sign in to continue</h3>
+  
+  <span class="button-inline">
+    <form action="/sign-in" method="get">
+      <button type="submit">Sign In</button>
+    </form>
+  </span>
+  
+  <span class="button-inline">
+    <form action="/sign-up" method="get">
+      <button type="submit">Sign Up</button>
+    </form>
+  </span>
+<% end %>

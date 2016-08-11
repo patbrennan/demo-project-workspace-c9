@@ -1,0 +1,9 @@
+<form action="/sign-in" method="post" id="sign_in">
+  <label for="new_content"><h3>Sign in to file CMS:</h3></label></br>
+  
+  Username: <input type="text" name="username" value="<%= session[:username] || '' %>"></br>
+  Password: <input type="password" name="password"></br>
+  
+  <input type="submit" value="Sign In">
+  <a href="/">Cancel</a>
+</form>

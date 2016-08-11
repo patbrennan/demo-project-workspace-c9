@@ -1,0 +1,9 @@
+<form action="/sign-up" method="post" id="sign_up">
+  <label for="new_content"><h3>Enter Desired Credentials:</h3></label>
+  
+  Username: <input type="text" name="username" value="<%= session[:username] || '' %>"></br>
+  Password: <input type="password" name="password"></br>
+  
+  <input type="submit" value="Sign Up">
+  <a href="/">Cancel</a>
+</form>
