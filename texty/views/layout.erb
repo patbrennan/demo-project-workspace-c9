@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Texty SMS Scheduler</title>
+    <link rel="stylesheet" href="/stylesheets/texty.css">
+    <script src="/javascripts/jquery-3.1.0.js"></script>
+    <script src="/javascripts/texty.js"></script>
+  </head>
+  <body>
+
+    <% if session[:message] %>
+      <p class="alert"><%= session.delete(:message) %></p>
+    <% end %>
+
+    <%== yield %>
+
+    <footer>
+      <p>Just for Fun.</p>
+    </footer>
+  </body>
+</html>

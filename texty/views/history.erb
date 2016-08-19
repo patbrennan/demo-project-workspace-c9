@@ -1,0 +1,39 @@
+<!--<ul id="sms_list">-->
+      <!-- Display sent texts w/status here -->
+  <% message_sent_history.each do |message| %>
+    <li class="message">
+      <!--format_sent-->
+      <span class="sent_date"><strong>Sent:</strong> <span class="local_date">
+      <%= message.date_sent %></span></span>
+
+      <span class='sent_status'><strong>Status:</strong><span class=
+      "<%= message.status %>"> <%= message.status %></span></span><br>
+      
+      <span class="to"><strong>To:</strong> <%= message.to %></span>
+      <span class="from"><strong>From:</strong> <%= message.from %></span>
+      <br><br>
+
+      <span><strong>Message:</strong></span>
+      <p class='sent_message'><%= message.body %></p>
+      
+      <!-- Reply form that sends a reply -->
+      <% if can_reply?(message.from) %>
+        <div class="reply_button"><img src="../images/reply_arrow.png">
+        Reply<br>
+
+          <form action="/send-sms" method="post" class="reply">
+  
+            <input type="hidden" name="phone_number" value=
+            "<%= message.from %>" maxlength="15" required>
+  
+            <textarea name="body" placeholder="your reply..." maxlength="160"
+            cols="30" rows="3" required></textarea>
+            
+            <input type="hidden" name="timezone" value="">
+            <input type="submit" name="send_now" value="Send >">
+          </form>
+        </div>
+      <% end %>
+    </li>
+  <% end %>
+<!--</ul>-->

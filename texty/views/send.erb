@@ -1,0 +1,76 @@
+<form action="/send-sms" method="post" name="send_sms schedule">
+  <fieldset id="sms">
+    <legend>Schedule or Send a Text:</legend>
+    
+    <p>To: (10-digit US Phone)</p>
+    <input type="tel" name="phone_number" placeholder="702-555-1212" 
+    maxlength="15" autofocus required><br>
+
+    <p>Message: (160 chars max)</p>
+    <textarea name="body" placeholder="your message..." maxlength="160" cols="25"
+    rows="8" required><%= @message || "" %></textarea><br>
+    <span class="countdown">remaining: <span id="countdown">160</span></span><br>
+
+    <p>Schedule to Send:</p>
+    <input type="date" name="date" id="current_date" value="" required>
+    <input type="time" name="time" id="current_time" value="" required><br>
+    
+    <input type="submit" name="schedule" value="SCHEDULE >>">
+    <span>-OR-</span>
+    <input type="submit" name="send_now" value="SEND NOW >>">
+    
+    <input type="hidden" value="" name="timezone">
+
+  </fieldset>
+</form>
+
+<form action="/sign-out" method="post" id="sign_out">
+  <fieldset>
+  <% if session[:signed_in] %>
+    <input type="submit" value="Sign Out">
+  <% end %>
+  </fieldset>
+</form>
+
+<div class="sent_texts">
+  <h3>Message History:</h3>
+    <ul id="sms_list">
+      <!-- Display sent texts w/status here -->
+      <% message_sent_history.each do |message| %>
+        <li class="message">
+          <!--format_sent-->
+          <span class="sent_date"><strong>Sent:</strong> <span class="local_date">
+          <%= message.date_sent %></span></span>
+
+          <span class='sent_status'><strong>Status:</strong><span class=
+          "<%= message.status %>"> <%= message.status %></span></span><br>
+          
+          <span class="to"><strong>To:</strong> <%= message.to %></span>
+          <span class="from"><strong>From:</strong> <%= message.from %></span>
+          <br><br>
+
+          <span><strong>Message:</strong></span>
+          <p class='sent_message'><%= message.body %></p>
+          
+          <!-- Reply form that sends a reply -->
+          <% if can_reply?(message.from) %>
+            <div class="reply_button"><img src="../images/reply_arrow.png">
+            Reply<br>
+
+              <form action="/send-sms" method="post" class="reply">
+  
+                <input type="hidden" name="phone_number" value=
+                "<%= message.from %>" maxlength="15" required>
+  
+                <textarea name="body" placeholder="your reply..." maxlength="160"
+                cols="30" rows="3" required></textarea>
+                
+                <input type="hidden" name="timezone" value="">
+                <input type="submit" name="send_now" value="Send >">
+              </form>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+</div>

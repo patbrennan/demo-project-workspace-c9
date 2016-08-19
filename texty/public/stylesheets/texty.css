@@ -1,0 +1,206 @@
+body {
+  font-family: sans-serif;
+  background-color: #EDEDED;
+}
+
+.alert {
+  background: yellow;
+  opacity: 0.6;
+  padding: 10px;
+  max-width: 80%;
+  border: none;
+  margin: 0 auto;
+  text-align: center;
+}
+
+input[type="tel"], textarea {
+  padding: 5px;
+}
+
+input, textarea {
+  border: none;
+  border-bottom: 2px solid green;
+  margin: 0 auto;
+}
+
+input[type="submit"] {
+  margin-top: 15px;
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+}
+
+input[type="submit"]:hover {
+  background-color: white;
+  color: green;
+  border: 1px solid green;
+  cursor: pointer;
+  cursor: hand;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border: 2px solid green;
+}
+
+fieldset {
+  width: 260px;
+  max-width: 80%;
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+fieldset legend {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+form p {
+  padding: 5 0;
+}
+
+.countdown {
+  color: black;
+  font-size: .6em;
+  float: left;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+footer {
+  position: relative;
+  bottom: 0px;
+  height: 15px;
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+  font-size: .7em;
+}
+
+#sms {
+  margin-top: 25px;
+  background-color: white;
+}
+
+#sign_out fieldset {
+  width: 260px;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  text-align: center;
+}
+
+#sign_out input {
+  color: green;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: hand;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+#sign_in {
+  width: 250px;
+  margin: 0 auto;
+}
+
+/* SMS HISTORY */
+.sent_texts {
+  width: 285px;
+  margin: 0 auto;
+  padding-top: 15px;
+  font-size: .6em;
+  height: 500px;
+  overflow-y: auto;
+}
+
+.sent_texts h3 {
+  text-align: center;
+  border: 1px solid black;
+  border-bottom: none;
+  padding: 5px 0px;
+  margin: 0;
+}
+
+.sent_texts ul {
+  margin-top: 0;
+  padding: 0;
+}
+
+.sent_texts li {
+  margin: 0;
+  padding: 5px 5px;
+}
+
+.sent_texts li {
+  list-style: none;
+  border: 1px solid black;
+  background: white;
+}
+
+.sent_date {
+  float: left;
+}
+
+.sent_status {
+  float: right;
+}
+
+.received {
+  color: orange;
+  font-weight: bold;
+}
+
+.delivered {
+  color: green;
+  font-weight: bold;
+}
+
+.failed, .undelivered {
+  color: red;
+  font-weight: bold;
+}
+
+.to {
+  float: left;
+}
+
+.from {
+  float: right;
+}
+
+.to, .from {
+  line-height: 14px;
+}
+
+/*REPLY BOX*/
+.reply {
+  margin: 10 0 10 0;
+}
+
+.reply input {
+  float: right;
+  margin: 0;
+  font-size: 1.0em;
+}
+
+.reply textarea {
+  width: 190px;
+  overflow: auto;
+  resize: vertical;
+  font-size: 1.2em;
+}
+
+.reply_button {
+  cursor: pointer;
+  cursor: hand;
+  padding: 5px 0px;
+}
+
+.reply_button img {
+  height: 15px;
+  width: 15px;
+  vertical-align: middle;
+}
