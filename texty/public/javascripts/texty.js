@@ -77,6 +77,4 @@ $(document).ready(function() {
 //     $("#sms_list").load("/update-history");
 // }
 
-// setInterval(function() {
-//   loadList();
-// }, 20000);
+// setInterval(loadList, 2000);
