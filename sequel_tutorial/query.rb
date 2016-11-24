@@ -1,3 +1,34 @@
+require "sequel"
+
+DB = Sequel.connect("postgres:/sequel-single-table")
+
+def format_money(num)
+  format("%0.2f", num)
+end
+
+menu_items = DB[:menu_items]
+
+items = menu_items.select do
+  labor_cost = prep_time / 60.0 * 12
+  profit_calc = menu_price - (ingred_cost + prep_time / 60.0 * 12)
+  [ item, 
+    menu_price,
+    ingred_cost,
+    labor_cost.as(labor),
+    profit_calc.as(profit) ]
+end
+
+items = items.order(Sequel.desc(:profit))
+
+items.each do |item|
+  puts item[:item]
+  puts "menu price: $#{format_money(item[:menu_price])}"
+  puts "ingredient cost: $#{format_money(item[:ingred_cost])}"
+  puts "labor: $#{format_money(item[:labor])}"
+  puts "profit: $#{format_money(item[:profit])}"
+  puts "\n"
+end
+
 
 DB.create_table(:birds) do
   primary_key :id
