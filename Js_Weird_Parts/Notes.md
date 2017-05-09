@@ -228,6 +228,73 @@ console.log(3 < 2 < 1);     // true, because associativity is left-to-right, and
 
 > [Equality & Sameness](/Js_Weird_Parts/Equalty-Comparison-And-Sameness.pdf) reference doc
 
+**Existence & Booleans**:
+
+*Note*: `undefined`, `null`, `0` and `""` all coerce to `false` in Js.
+
+```javascript
+var a;
+
+// goes to internet & looks for a value
+
+if (a) {      // Js attemptes to convert `a` to a boolean value
+  console.log("Something is there.");
+}
+
+// if no value is found, the `if` statement fails.
+```
+
+Be careful that what you're testing for in the `if` statement doesn't evaluate to `0`, or it will not run! Instead, you could use `if (a || a === 0)`.
+
+**Default Values**:
+
+```javascript
+function greet(name) {
+  console.log("Hello " + name); // coerces the variable `name` to a string of `undefined`
+}
+
+greet();
+```
+
+In the code above, `name`s default value is `undefined` because it hasn't been set with invoking the `greet` method. The code below shows a common way to set a default value (changed in ES6) in legacy code in the case where no value exists or it is undefined.
+
+```javascript
+function greet(name) {
+  name = name || "<your name here>"; // name is `undefined` but this sets a default
+  console.log("Hello " + name);
+}
+
+greet();
+```
+
+In the above code, the `||` method returns the value that *could be coerced* to true.
+
+**Framework Aside**:
+
+If you had several libraries included in your app, such as:
+
+```html
+<html>
+  <head>
+  
+  </head>
+  <body>
+    <script src="lib1.js"></script>
+    <script src="lib2.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+
+These different files are not creating separate execution contexts. They are quite literally "stacking" the code and running it as if they were a single file. It's important those files don't collide with each other! For example, if they had the same variable or function names. They are put together in the order they appear in your markup from top to bottom.
+
+To prevent these collisions from happening, code in each Js file could include:
+
+```javascript
+window.libraryName = window.libraryName || "Lib 2";
+```
+
+
 
 
 
