@@ -201,9 +201,34 @@ console.log(c); // 4
 // `=` has right-to-left associativity, thus all values are `4`
 ```
 
+**Conceptual Aside: Coercion**: Converting a value from one type to another. (happens often with dynamically typed languages)
 
+**Comparison Operators Example**:
+
+```javascript
+console.log(1 < 2 < 3);     // true, as expected.
+console.log(3 < 2 < 1);     // true, because associativity is left-to-right, and Js engine
+// is actually comparing (false < 1). Because of coercion, `false` is coerced to `0`
+// and `true` is returned.
+```
+
+`NaN` = Not a Number. Js tried to coerce something to a number, and it couldn't.
+
+`null` = coerced to `0`, HOWEVER, `null == 0; // false`. Some things don't do what you'd expect.
+
+`null < 1` = `true`. This is weird. This is one of the "bad" parts of Js.
+
+`"" == 0; // true` & `"" == false; // true` = both are true!
+
+**How do we solve this???**
+
+`===` = strict equality & `!==` = strict inequality. These compare two things but *do not* try to coerce values. Using strict equality / inequality will save us from having strange bugs or weird values that are coerced.
+
+**See reference**:
 
 > [Equality & Sameness](/Js_Weird_Parts/Equalty-Comparison-And-Sameness.pdf) reference doc
+
+
 
 
 
