@@ -294,6 +294,84 @@ To prevent these collisions from happening, code in each Js file could include:
 window.libraryName = window.libraryName || "Lib 2";
 ```
 
+## Section 4
+
+**Objects & Functions**:
+
+Remember: An object in Js is a collection of name/value pairs. Also, a *method* is simply a function on an object.
+
+An object is sitting in memory in a certain spot, and it has references to it's properties (i.e., *primitive*, *objects*, or *methods*). There are different ways to access these properties & set them:
+
+```javascript
+var person = new Object();
+
+person["firstname"] = "Patrick";
+// firstname property set to a primitive string.
+// computed member access = [] - this is one way to access properties.
+person["lastname"] = "Brennan";
+
+var firstNameProperty = "firstname";
+
+console.log(person);                    // Object
+console.log(person[firstNameProperty]); // Patrick
+
+console.log(person.firstname);          // Patrick
+// This is the 'dot' notation - or member access.
+console.log(person.lastname);
+
+person.address = new Object();
+// another object sitting inside an object
+person.address.street = "9892 Serona Heights Ct";
+person.address.city = "Las Vegas"
+// Another way to set another property/value.
+
+console.log(person.address.street); // 9892 Serona Heights Ct
+```
+
+**Objects & Object Literals**:
+
+```javascript
+var person = {};
+// this is object literal notation; the same as `new Object();`
+
+var person = { 
+  firstname: "Patrick", 
+  lastname: "Brennan",
+  address: {
+    street: "9892 Serona Heights Ct",
+    city: "Las Vegas",
+    state: "NV"
+  }
+};
+// you can have multiple lines & Js treats it as one line of code
+// This is the same as the previous example, creating the object, and setting 
+// each property individually.
+```
+
+You can also create an object on the fly, or pass an object to a function, as well as assign new properties with their own values to a previously assigned variable that references an object:
+
+```javascript
+function greet(person) {
+  console.log("Hi " + person.firstname);
+}
+
+greet(patrick);
+greet({ 
+  firstname: "Mary",
+  lastname: "Doe"
+});
+
+patrick.dob = {
+  year: "1985",
+  month: "06",
+  day: "22"
+}
+// the variable `patrick` referenced an abject, and now we are creating a new
+// property & assigning it's value as another object.
+```
+
+
+
 
 
 
