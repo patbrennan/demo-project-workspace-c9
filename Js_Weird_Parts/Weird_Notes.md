@@ -370,6 +370,84 @@ patrick.dob = {
 // property & assigning it's value as another object.
 ```
 
+**Framework Aside**:
+
+*Faking NameSpaces*: Namespace = a container for variables & functions. It's typically used to keep variables & functions w/the same name separate.
+
+```javascript
+var greet = "hello.";
+var greet = "hola";
+
+console.log(greet); // hola
+
+var english = {};
+var spanish = {}; // these objects are just used as a container
+
+english.greet = "hello.";
+spanish.greet = "hola";
+
+console.log(english); // Object {greet: "hello.";
+// This is a way to "contain" methods, variables, etc - to prevent namespace collisions.
+// This could go as many levels "deep" as you need.
+
+// The below code doesn't work because `english.greetings` would be returned as undefined:
+
+english.greetings.greet = "hello."; // can't call `greet` from `undefined`
+english.greetings = {}; // must instantiate the object first & it must come first
+// lexically in the code.
+```
+
+**JSON & Object Literals**
+
+*JSON* = Javascript Object Notation
+
+It's similar to a Js Object syntax, but it is not an Object. It's just a string of data. The syntax is slightly different:
+
+```javascript
+var objectLiteral = {
+  firstName: "patrick",
+  lastName: "brennan",
+}
+
+console.log(objectLiteral);
+
+{
+  "firstname": "patrick",   // JSON properties MUST be wrapped in quotes. It is also valid 
+  "lastname": "brennan",    // object literal syntax, but is required for JSON.
+  "isAPtrogrammer": true,
+}
+```
+
+All JSON is valid Js Object literal syntax, but not all Object literal syntax is valid JSON. JSON has stricter rules. JavaScript has some built-in functionality for dealing / handling JSON:
+
+```javascript
+console.log(JSON.stringify(objectLiteral)); // converst object into JSON format
+
+var jsonValue = JSON.parse('{ "firstname": "patrick", "lastname": "brennan", }');
+// This will be converted to a Js Object
+```
+
+**Function are Objects**:
+
+*First Class Functions* = everything you can do with other "types" you can do with functions. Assign them to variables, pass them around, create them on the fly.
+
+Functions reside in memory as a special type of object. They have two special properties:
+- NAME (optional, can by anonymous)
+- CODE (actual lines of code written)
+  - This is "Invocable" (). You can tell Js engine to "run" that code.
+  - This is just one of the properties of the function!
+
+```javascript
+function greet() {
+  console.log('hi');
+}
+
+greet.language = 'english'; // adds a property to a function because the function 
+// is an object.
+console.log(greet); // logs the text of the function you wrote.
+console.log(greet.language); // english
+```
+
 
 
 
