@@ -448,6 +448,62 @@ console.log(greet); // logs the text of the function you wrote.
 console.log(greet.language); // english
 ```
 
+**Function Expression**: A unit of code that evaluates in a value. It doesn't have to be saved to a variable. Whereas a *statement* does work.
+
+```javascript
+var a;
+
+a = 3; // = is an operator, or function. This will return 3. This is an expression.
+1 + 2; // a valid expression. Returns the result of the `+` function.
+a = { greeting: 'hi';} // also an expression.
+
+if (a === 3) { // the `if` is just a statement and the (a === 3) is an expression.
+  // code...
+}
+```
+
+In Js, you have `function statements` and `function expressions`, which are very powerful. To illustrate the difference:
+
+```javascript
+// function statement - function placed in memory, but doesn't return a value or result in a value.
+function greet() {
+  console.log('hi');
+}
+
+// the function is an object. It's `name` property is `greet` & it's `code` property is the code inside the curly braces.
+
+// function expression
+var anonymousGreet = function() {
+  console.log('hi');
+}
+
+// creating an object on the fly, and setting it equal to the variable. The reference
+// in memory will contain a function object.
+// the `name` property of the function object in this case is anonymous (anonymous function).
+// to invoke this function, use the variable name & parens:
+anonymousGreet(); // hi
+```
+
+The reason it's an expression is because we are assigning a value to a variable. The anonymous function returns a function object that is then assigned to the `anonymousGreet` variable. In the function statement, the function is simply put in memory during the *execution phase*, but with an expression an *object is returned*.
+
+If you were to call `anonymousGreet();` above (or first, lexically), before the anonymous function was assigned to the variable, what would happen? `Uncaught TypeError: undefined is not a function`
+
+In the code below, we are creating a function that takes a parameter - in this case - another function. Inside that function, we are invoking the function that was passed in as a parameter. This illustrates that function as *first class functions* can be created on the fly, passed around, and used like variables, and are simply objects themselves. This is essentialy called `functional` programming.
+
+```javascript
+function log(a) {
+  a();
+}
+
+log(function() {
+  console.log('hi');
+});
+```
+
+**Conceptual Aside**: Pass by value vs. Pass by reference:
+
+
+
 
 
 
