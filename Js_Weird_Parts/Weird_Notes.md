@@ -500,7 +500,131 @@ log(function() {
 });
 ```
 
-**Conceptual Aside**: Pass by value vs. Pass by reference:
+**Conceptual Aside**: Pass by value vs. Pass by reference (variables):
+
+*By Value* example: When variables point to a primitive type, they receive a reference, or address, to that value in memory. If another variable is then set equal to the initial variable, with primitives, it receives a new reference to a *copy* of that value. I.E., pass by value.
+
+```javascript
+var a = 3;  // address is 0x001 for example, referring to the value 3 in memory
+var b = a;  // address is 0x002, referring to a copy of the primitive value.
+```
+
+*By Reference* example: With objects, Js is a bit different. Whether one variable is set equal to another that references an object, or the variable that references an object is passed into a function, the new variable uses the same *reference* spot in memory, referencing the exact same object. No copies are made.
+
+More examples:
+
+```javascript
+// by value (primitives)
+var a = 3;
+var b;
+
+b = a;  // `=` sees they are primitives, and creates a new copy, with a new reference.
+a = 2;
+
+console.log(a); // 2
+console.log(b); // 3
+
+// by reference (objects - including functions)
+var c = { greeting: 'hi' };
+var d;
+
+d = c;  // `=` sets the reference of d to the same location in memory as c; same object.
+c.greeting = 'hello'; // mutates the object for all references to it.
+
+console.log(c); // { greeting: 'hello' }
+console.log(d); // { greeting: 'hello' }
+
+// even as parameters to functions, primitives are passed by value; objects by reference.
+
+// The equals operator sets up new memory space (new address) when used:
+c = { greeting: 'howdy' };
+console.log(c); // { greeting: 'howdy' } - sets a new space & reference
+console.log(d); // { greeting: 'hello' } - retains the old reference to original object.
+```
+
+**Objects, Functions, and `this`**:
+
+`this` keyword: can change depending on how a function is called. (there are more complex examples as the notes go on...)
+
+```javascript
+console.log(this); // available at the global execution context level, Shows `Window`
+
+function a() {
+  console.log(this);
+  this.newVariable = 'hello'; // sets a new property on the global object.
+}
+
+a();  // also the `Window` Object if you're simply invoking the function.
+console.log(newVariable); // don't need dot operator on global variables
+
+var b = function() {
+  console.log(this);
+}
+
+b();  // `Window`
+
+var c = {
+  name: 'The c object',
+  log: function() {
+    this.name = 'updated c object'; // changes the name property of the object.
+    console.log(this);
+  }
+}
+
+c.log();  // logs `c` object - `this` refers to the object that the method 
+// sits inside of.
+```
+
+Many people feel that the following is a bug in Js. In this case, we have a nested function inside a function. What does the `this` keyword reference?
+
+```javascript
+var d = {
+  name: 'The d object',
+  log: function() {
+    this.name = 'updated d object'; // changes the name property of the object.
+    console.log(this);
+    
+    var setName = function(newName) {
+      this.name = newName;  // we expect `this` to reference the `d` object. It doesn't!
+    }   // This internal function points to the global object...! name property
+        // is created on the global object.
+    setName('Updated the D object again!');
+    console.log(this);
+  }
+}
+
+d.log();
+```
+
+The following is a common pattern that developers use to work around this. Remember pass-by-reference:
+
+```javascript
+var d = {
+  name: 'The d object',
+  log: function() {
+    var self = this;  // self points to same location in memory as `this`, which 
+                      // points to the `d` object. Now, everywhere else we'd use `this
+                      // we will use `self`.
+  
+    self.name = 'updated d object';
+    console.log(self);
+    
+    var setName = function(newName) {
+      self.name = newName;
+    }
+    
+    setName('Updated the D object again!'); // now this mutates the object `d`
+    console.log(self);  // name: 'Updated the D object again!'
+  }
+}
+
+d.log();
+```
+
+In the above code, `self` is pointing to the same object in memory because of *pass by reference*. Therefore, whenever `self` is mutated, so is the same `this` object. This reduces confusion as to what `this` is referring to.
+
+
+
 
 
 
