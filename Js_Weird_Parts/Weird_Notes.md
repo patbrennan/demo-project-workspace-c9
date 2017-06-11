@@ -623,6 +623,141 @@ d.log();
 
 In the above code, `self` is pointing to the same object in memory because of *pass by reference*. Therefore, whenever `self` is mutated, so is the same `this` object. This reduces confusion as to what `this` is referring to.
 
+**Conceptual Aside**: Arrays - collections of anything
+
+Since Js is dynamically typed, the elements of the array can be any type of data / value / object, including functions.
+
+```javascript
+var arr = [
+  1,
+  false,
+  {
+    name: 'Patrick',
+    occupation: 'Coder / Pilot',
+  },
+  function(name) {
+    var greeting = 'Hello';
+    console.log(greeting + ' ' + name);
+  },
+  "hello"
+];
+
+arr[0]; // 1
+
+console.log(arr); // lists all primitive values & typeOf for objects
+arr[3](arr[2].name); // 'Hello Patrick' - note you can actually invoke the function like this.
+```
+
+**`arguments` & SPREAD**:
+
+`arguments` is set up in the execution context each time a function is executed. The `arguments` is just an object that holds the parameters you pass to a function. It's array-like, but not an array. 
+
+```javascript
+function greet(firstName, lastName, language) {
+  language = language || 'en';  // how to set a default parameter in ES5 & earlier
+
+  console.log(firstName);
+  console.log(lastName);
+  console.log(language);
+  console.log(arguments);
+}
+
+greet(); // all logged as `undefined` except language. Hoisting set up the variables.
+greet('John'); // Js uses parameters left to right. Now `firstName` is defined
+greet('John', 'Doe'); 
+```
+
+What is a `SPREAD` parameter? It is the `...` notation that wraps all other parameters in an array. This is an ES6 feature, and isn't available as of yet in all browsers as of this writing. Example:
+
+```javascript
+function greet(firstName, lastName, ...other) {
+  // code
+}
+```
+
+**Framework Aside**: Function Overloading (Js doesn't have)
+
+What is it? You can have functions of the same name that have different numbers of parameters. The following is a pattern to simplify things a bit that you will see some frameworks use:
+
+```javascript
+function greet(firstname, lastname, language) {
+      
+  
+  if (language === 'en') {
+      console.log('Hello ' + firstname + ' ' + lastname);   
+  }
+  
+  if (language === 'es') {
+      console.log('Hola ' + firstname + ' ' + lastname);   
+  }
+}
+
+function greetEnglish(firstname, lastname) {
+  greet(firstname, lastname, 'en');   
+}
+
+function greetSpanish(firstname, lastname) {
+  greet(firstname, lastname, 'es');   
+}
+
+greetEnglish('John', 'Doe');
+greetSpanish('John', 'Doe');
+```
+
+**Conceptual Aside**: Syntax Parsers
+
+The Js engine goes through your code character by character, and makes certain assumptions & doing certain things based on a set of rules. Sometimes Js can even change code as it goes. This all happens before the code is even executed.
+
+***Dangerous Aside***: Automatic Semicolon Insertion
+
+Anywhere the syntax parser expects a semicolon to be, it will put one there for you. *Always put your own semicolons*. This can cause major problems!
+
+In the code below, if there were a carriage return after the `return` keyword, Js would insert a semicolon automatically & simply return `undefined`. To fix it, you must put the curly brace on the same line as the `return` statement. **Tip**: Always put your opening curly brace on the same line as the previous statement / declaration.
+
+```javascript
+function getPerson() {
+ 
+    return {
+        firstname: 'Tony'
+    }
+    
+}
+
+console.log(getPerson());
+```
+
+**Framework Aside**: Whitespace
+
+*Defition*: Invisible characters that create literal 'space' in your written code. I.E., carriage returns, tabs, spaces.
+
+They make code more readable. The syntax parser is very liberal in what it allows. You will see a lot of usage of this with comments & white space in frameworks & source code.
+
+```javascript
+var 
+  // first name of the person
+  firstname, 
+  
+  // last name of the person
+  lastname, 
+  
+  // the language
+  // can be 'en' or 'es'
+  language;             // same as: var firstname, lastname, language;
+
+var person = {
+  // the first name
+  firstname: 'John',
+  
+  // the last name
+  // (always required)
+  lastname: 'Doe'
+}
+
+console.log(person);
+```
+
+
+
 
 
 
