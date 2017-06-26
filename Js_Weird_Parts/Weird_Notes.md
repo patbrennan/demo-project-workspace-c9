@@ -201,7 +201,9 @@ console.log(c); // 4
 // `=` has right-to-left associativity, thus all values are `4`
 ```
 
-**Conceptual Aside: Coercion**: Converting a value from one type to another. (happens often with dynamically typed languages)
+### Conceptual Aside: 
+
+**Coercion**: Converting a value from one type to another. (happens often with dynamically typed languages)
 
 **Comparison Operators Example**:
 
@@ -269,7 +271,7 @@ greet();
 
 In the above code, the `||` method returns the value that *could be coerced* to true.
 
-**Framework Aside**:
+### Framework Aside:
 
 If you had several libraries included in your app, such as:
 
@@ -370,7 +372,7 @@ patrick.dob = {
 // property & assigning it's value as another object.
 ```
 
-**Framework Aside**:
+### Framework Aside:
 
 *Faking NameSpaces*: Namespace = a container for variables & functions. It's typically used to keep variables & functions w/the same name separate.
 
@@ -500,7 +502,9 @@ log(function() {
 });
 ```
 
-**Conceptual Aside**: Pass by value vs. Pass by reference (variables):
+### Conceptual Aside: 
+
+**Pass by value vs. Pass by reference (variables)**:
 
 *By Value* example: When variables point to a primitive type, they receive a reference, or address, to that value in memory. If another variable is then set equal to the initial variable, with primitives, it receives a new reference to a *copy* of that value. I.E., pass by value.
 
@@ -623,7 +627,9 @@ d.log();
 
 In the above code, `self` is pointing to the same object in memory because of *pass by reference*. Therefore, whenever `self` is mutated, so is the same `this` object. This reduces confusion as to what `this` is referring to.
 
-**Conceptual Aside**: Arrays - collections of anything
+### Conceptual Aside: 
+
+**Arrays - collections of anything**
 
 Since Js is dynamically typed, the elements of the array can be any type of data / value / object, including functions.
 
@@ -675,7 +681,9 @@ function greet(firstName, lastName, ...other) {
 }
 ```
 
-**Framework Aside**: Function Overloading (Js doesn't have)
+### Framework Aside:
+
+**Function Overloading (Js doesn't have)**
 
 What is it? You can have functions of the same name that have different numbers of parameters. The following is a pattern to simplify things a bit that you will see some frameworks use:
 
@@ -704,11 +712,15 @@ greetEnglish('John', 'Doe');
 greetSpanish('John', 'Doe');
 ```
 
-**Conceptual Aside**: Syntax Parsers
+### Conceptual Aside:
+
+**Syntax Parsers**
 
 The Js engine goes through your code character by character, and makes certain assumptions & doing certain things based on a set of rules. Sometimes Js can even change code as it goes. This all happens before the code is even executed.
 
-***Dangerous Aside***: Automatic Semicolon Insertion
+### Dangerous Aside: 
+
+***Automatic Semicolon Insertion***
 
 Anywhere the syntax parser expects a semicolon to be, it will put one there for you. *Always put your own semicolons*. This can cause major problems!
 
@@ -726,7 +738,9 @@ function getPerson() {
 console.log(getPerson());
 ```
 
-**Framework Aside**: Whitespace
+### Framework Aside:
+
+**Whitespace**
 
 *Defition*: Invisible characters that create literal 'space' in your written code. I.E., carriage returns, tabs, spaces.
 
@@ -755,6 +769,81 @@ var person = {
 
 console.log(person);
 ```
+
+**Immediately Invoked Function Expressions (IIFE)**:
+
+```javascript
+// a function statement
+function greet(name) {
+  console.log('Hello ' + name);
+}
+
+greet('John');
+
+// a function expression
+var greetFunc = function(name) {
+  console.log('Hello ' + name);
+}
+
+greetFunc('Bill');
+
+// This is immediately invoked. It is executed immediately after it is created.
+// (IIFE)
+var greeting = function(name) {
+  return 'Hello ' + name;
+}('Dilbo');
+```
+
+In the above code, whatever the return value of the anonymous IIFE is what `greeting` will be set to.
+
+Just writing an anonymous function statement without invoking it isn't valid Js! But what if you wanted your function to just sit in the code without getting an error? The most common / accepted way is to simply wrap it in paratheses. *Remember*, you don't put simple statements in parentheses. You put expressions (that return something).
+
+```javascript
+var firstName = 'Shanendoa'
+
+(function(name) {
+  var greeting = 'Inside IIFE: Hello'
+  console.log(greeting + ' ' + name);
+}(firstName));
+// also an IIFE
+```
+
+### Framework Aside:
+
+**IIFEs & Safe Code**
+
+When the code above is run, we first have the *global* execution context. When Js sees the invoking parentheses, a new anonymous execution context is created. The `greeting` variable is scoped to that anonymous execution context, and is not "touching" the global environment. 
+
+As an example, if you have the code above in one file, and the code below in another, recall that they are actually combined into one file. This could cause a collision as before. However, there are no collisions in this code now. 
+
+```javascript
+var greeting = 'Hola';
+// Still calls 'Hello John';
+```
+
+*Why?* - There is a new execution context created in the IIFE. The variables do not collide because they are defined & scoped in different execution contexts.
+
+**NOTE**: By wrapping the code in an IIFE, you ensure your code doesn't collide with or interfere with any other code in the application. You will see this in a lot of frameworks - there will be an opening parenthese at the beginning of the file, and a closing parenthese at the end. *All of its code is wrapped in an IIFE*
+
+This is very useful - you can immitate this in your own code, and not put something into the global object! This makes your code *safe*.
+
+*But what if you want access to the global object in your IIFE?* If you wanted to make it available everywhere else in your code... Simply pass in the global object to the function:
+
+```javascript
+var firstName = 'J-dawg'
+
+(function(global, name) {
+  var greeting = 'Inside IIFE: Hello'
+  global.greeting = 'Hello';        // this would overwrite the globally scoped 
+                                    // variable `greeting`;
+  
+  console.log(greeting + ' ' + name);
+}(window, firstName));
+```
+
+**Understanding Closures**
+
+
 
 
 
