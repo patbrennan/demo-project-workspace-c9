@@ -188,10 +188,10 @@ The above is called "infix" notation - where the function is between the two par
 
 **Operator associativity**: what order operator functions get called in: left-to-right or right-to-left. (when functions have the same precedence)
 
-> [Precedence & Associativity](/Js_Weird_Parts/Operator-Precedence-In-Javascript.pdf) reference doc
+> [Precedence & Associativity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence) reference doc
 
 ```javascript
-var a = 2, b = 3, c = 3;
+var a = 2, b = 3, c = 4;
 
 a = b = c;
 
@@ -228,7 +228,7 @@ console.log(3 < 2 < 1);     // true, because associativity is left-to-right, and
 
 **See reference**:
 
-> [Equality & Sameness](/Js_Weird_Parts/Equalty-Comparison-And-Sameness.pdf) reference doc
+> [Equality & Sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness) reference doc
 
 **Existence & Booleans**:
 
@@ -255,7 +255,7 @@ function greet(name) {
   console.log("Hello " + name); // coerces the variable `name` to a string of `undefined`
 }
 
-greet();
+greet();  // Hello undefined
 ```
 
 In the code above, `name`s default value is `undefined` because it hasn't been set with invoking the `greet` method. The code below shows a common way to set a default value (changed in ES6) in legacy code in the case where no value exists or it is undefined.
@@ -266,7 +266,7 @@ function greet(name) {
   console.log("Hello " + name);
 }
 
-greet();
+greet();  // Hello <your name here>
 ```
 
 In the above code, the `||` method returns the value that *could be coerced* to true.
@@ -319,7 +319,7 @@ console.log(person[firstNameProperty]); // Patrick
 
 console.log(person.firstname);          // Patrick
 // This is the 'dot' notation - or member access.
-console.log(person.lastname);
+console.log(person.lastname);           // Brennan
 
 person.address = new Object();
 // another object sitting inside an object
@@ -374,7 +374,9 @@ patrick.dob = {
 
 ### Framework Aside:
 
-*Faking NameSpaces*: Namespace = a container for variables & functions. It's typically used to keep variables & functions w/the same name separate.
+*Faking NameSpaces*: 
+
+Namespace = a container for variables & functions. It's typically used to keep variables & functions w/the same name separate.
 
 ```javascript
 var greet = "hello.";
@@ -388,7 +390,7 @@ var spanish = {}; // these objects are just used as a container
 english.greet = "hello.";
 spanish.greet = "hola";
 
-console.log(english); // Object {greet: "hello.";
+console.log(english); // Object {greet: "hello."};
 // This is a way to "contain" methods, variables, etc - to prevent namespace collisions.
 // This could go as many levels "deep" as you need.
 
@@ -416,7 +418,7 @@ console.log(objectLiteral);
 {
   "firstname": "patrick",   // JSON properties MUST be wrapped in quotes. It is also valid 
   "lastname": "brennan",    // object literal syntax, but is required for JSON.
-  "isAPtrogrammer": true,
+  "isAProgrammer": true,
 }
 ```
 
@@ -597,7 +599,7 @@ var d = {
   }
 }
 
-d.log();
+d.log(); // Object {name: "updated d object", log: function}
 ```
 
 The following is a common pattern that developers use to work around this. Remember pass-by-reference:
@@ -607,7 +609,7 @@ var d = {
   name: 'The d object',
   log: function() {
     var self = this;  // self points to same location in memory as `this`, which 
-                      // points to the `d` object. Now, everywhere else we'd use `this
+                      // points to the `d` object. Now, everywhere else we'd use `this`
                       // we will use `self`.
   
     self.name = 'updated d object';
@@ -622,7 +624,7 @@ var d = {
   }
 }
 
-d.log();
+d.log()
 ```
 
 In the above code, `self` is pointing to the same object in memory because of *pass by reference*. Therefore, whenever `self` is mutated, so is the same `this` object. This reduces confusion as to what `this` is referring to.
@@ -716,7 +718,7 @@ greetSpanish('John', 'Doe');
 
 **Syntax Parsers**
 
-The Js engine goes through your code character by character, and makes certain assumptions & doing certain things based on a set of rules. Sometimes Js can even change code as it goes. This all happens before the code is even executed.
+The Js engine goes through your code character by character, and makes certain assumptions & does certain things based on a set of rules. Sometimes Js can even change code as it goes. This all happens before the code is even executed.
 
 ### Dangerous Aside: 
 
@@ -724,7 +726,7 @@ The Js engine goes through your code character by character, and makes certain a
 
 Anywhere the syntax parser expects a semicolon to be, it will put one there for you. *Always put your own semicolons*. This can cause major problems!
 
-In the code below, if there were a carriage return after the `return` keyword, Js would insert a semicolon automatically & simply return `undefined`. To fix it, you must put the curly brace on the same line as the `return` statement. **Tip**: Always put your opening curly brace on the same line as the previous statement / declaration.
+In the code below, if there were a carriage return after the `return` keyword, Js would insert a semicolon automatically & simply return `undefined`. To fix it, you must put the curly brace on the same line as the `return` statement. **Tip**: *Always put your opening curly brace on the same line as the previous statement / declaration.*
 
 ```javascript
 function getPerson() {
