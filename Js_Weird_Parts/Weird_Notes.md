@@ -845,7 +845,138 @@ var firstName = 'J-dawg'
 
 **Understanding Closures**
 
+Start with an example. 
 
+```javascript
+function greet(whattosay) {
+  return function(name) {
+    console.log(whattosay + ' ' + name);
+  }
+}
+
+var sayHi = greet('Hi');
+sayHi('Dude'); // Hi Dude
+```
+
+In the code above, the return value of `greet()` is assigned to the variable `sayHi`. When we invoke `sayHi('Dude')`, how does it remember the value of `whattosay`? Because of closures.
+
+What is happening:
+1. When code starts, we have the global execution context.
+2. When the code executes the `greet()` function, a new execution context is created.
+3. The variable that is passed to it is sitting in its variable environment.
+4. Js creates a new *function object*, and returns it.
+5. After that return, the `greet()` execution context is popped off the execution stack - it's gone.
+6. Normally, when that execution context finishes, Js eventually clears off the space in memory where the variables / functions / etc live - this is called *garbage collection*.
+7. However, that memory space is still there in this case.
+8. Now we're in the global execution context.
+9. We invoke the function `sayHi()` is pointing at (the function object in memory).
+10. That creates a *new* execution context, with the `name` variable in memory.
+11. When the Js engine sees the `whattosay` variable, it looks for it up the variable scope chain. It couldn't find it inside the fuction itself.
+12. The `sayHi()` variable still has reference to the `whattosay` variable from the original `greet()` execution context through the scope chain.
+13. Any functions created inside the `greet` function will have reference to its (greet's) memory - what was in its execution context.
+14. In other words, the execution context has "enclosed" its outer variables that were previously available.
+
+This isn't something you tell Js to do - it's a feature of the language.
+
+In other words, even though a function has ended & returned, Js engine still retains reference to where it should - the outer variable environment.
+
+**Part 2**:
+
+This is a common example of closures. Examine the code. What will the 3 lines at the end of the program output?
+
+```javascript
+function buildFunctions() {
+  var arr = [];
+  
+  for (var i = 0; i < 3; i++) {
+    arr.push(
+      function() {
+        console.log(i);
+      }
+    );
+  }
+  
+  return arr;
+}
+
+var fs = buildFunctions();
+
+fs[0]();
+fs[1]();
+fs[2]();
+```
+
+When you look at this code, you might first expect `0, 1, 2`. However, it will actually log `3, 3, 3`.
+
+Under the hood, here is what's happening:
+
+1. `buildFunctions` is pushing the *functions* into the array, so that `fs` is assigned the value of an array of functions.
+2. The global execution context is there.
+3. With `buildFunctions` invoked - it's own context is created, with two variables, `i` & `arr`.
+4. The `for` loop runs, and `i` is first set to 0. Realize however, *the `console.log` isn't actually being run at this time*. We're just creating a new *function object*, and putting the line of code as its code property.
+5. `i` is incremented and another *function object* is added, and so forth, until there are 3 function objects inside the `arr` variable.
+6. By the time the `return arr` is executed, the `i` variable is set to 3.
+7. When we go back to the global execution context, `buildFunctions` context is "popped" off the execution stack, *but the memory space to its variables remains*.
+8. We go to the first `fs[0]();` call, and create a new execution context.
+9. There is no variable `i` in it's scope, so it goes up the variable scope chain, looking in its outer reference.
+10. Here, it finds `i` as the value 3, and the `console.log(i)` statement logs 3.
+11. Subsequently, the remaining functions inside the `fs` array are invoked, and they retained the **same** reference to the outer environment, since they were created during the same execution context as `buildFunctions`.
+12. Each of the functions that were invoked "enclosed" the same reference to the outer variables when they were created. They logged the value of `i` as of the time they were invoked. This is the closure.
+
+But what if you *did* want it to work the way most people think it works, outputting `0, 1, 2`?
+
+ES6 allows us to use the `let` keyword to scope a variable to the block level. Each time the `for` loop runs, `j` is reinstantiated & the value is assigned.
+
+```javascript
+function buildFunctions2() {
+  var arr = [];
+  
+  for (var i = 0; i < 3; i++) {
+    let j = i;
+    arr.push(
+      function() {
+        console.log(j);
+      }
+    );
+  }
+  
+  return arr;
+}
+
+var fs2 = buildFunctions2();
+
+fs2[0]();
+fs2[1]();
+fs2[2]();
+```
+
+How do we accomplish the same task with ES5? In order to preserve the value of `i` for the function, we would need a separate execution context for each of the functions we're pushing into the `arr`. In other words, you could use an **IIFE**.
+
+```javascript
+function buildFunctions3() {
+  var arr = [];
+  
+  for (var i = 0; i < 3; i++) {
+    arr.push(
+      (function(j) {
+      return function() {
+        console.log(j);
+      }
+      }(i));    // IIFE - new execution context is created each time this is invoked.
+    );
+  }
+  
+  return arr;
+}
+
+var fs3 = buildFunctions3();
+
+fs3[0]();
+fs3[1]();
+fs3[2]();
+```
+
+Each time the loop runs & the anonymous function is immediately invoked, the variable `j` is stored in that execution context (which was set to `i` at that time). Therefore, when they are run, it will `console.log(j)` which is set to `0, 1, 2`, respectively, in each execution context. NOTE that the array still contains function objects, but those functions each reference their own outer variable environments *at the time they were created* (enclosing their outer environments) - using the variable scope chain to set the value of `j`.
 
 
 
