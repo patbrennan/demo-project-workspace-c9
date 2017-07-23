@@ -45,11 +45,10 @@ function buildFunctions3() {
   var arr = [];
   
   for (var i = 0; i < 3; i++) {
-    let j = i;
     arr.push(
-      function() {
+      (function(j) {
         console.log(j);
-      }
+      }(i));
     );
   }
   

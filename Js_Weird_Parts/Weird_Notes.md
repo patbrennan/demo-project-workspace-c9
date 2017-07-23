@@ -978,6 +978,256 @@ fs3[2]();
 
 Each time the loop runs & the anonymous function is immediately invoked, the variable `j` is stored in that execution context (which was set to `i` at that time). Therefore, when they are run, it will `console.log(j)` which is set to `0, 1, 2`, respectively, in each execution context. NOTE that the array still contains function objects, but those functions each reference their own outer variable environments *at the time they were created* (enclosing their outer environments) - using the variable scope chain to set the value of `j`.
 
+### Framework Aside: Function Factories
+
+Instead of passing `language` to the inner function, we pass it to the outer function, and return the inner function. The language is "trapped" or collected in the closure. *This could be useful for creating default parameters, among other things*.
+
+```javascript
+function makeGreeting(language) {     // this is the "factory function"
+  return function(firstname, lastname) {
+    if (language === 'en') {
+      console.log('Hello ' + firstname + ' ' + lastname);
+    }
+    
+    if (language === 'es') {
+      console.log('Hola ' + firstname + ' ' + lastname);
+    }
+  }
+}
+
+var greetEnglish = makeGreeting('en');  // greetEnglish is a function object
+var greetSpanish = makeGreeting('es');
+// the closure keeps track of its execution context, solidifying the language argument
+// each time you call it.
+
+greetEnglish('John', 'Doe');  // Hello John Doe
+greetSpanish('Jose', 'Doe');  // Hola Jose Doe
+```
+
+** Closures & Callbacks**
+
+This is actually using function expressions (passing the function made on the fly as a parameter) & closures & first-class functions.   
+
+```javascript
+function sayHiLater() {
+  var greeting = 'Hi';
+  
+  setTimeout(function() {
+    console.log(greeting);  // still has access to `greeting` because of its closure
+  }, 3000);
+}
+
+sayHiLater();
+```
+
+```javascript
+// jquery uses function expressions & first-class functions
+$("button").click(function() {
+  // ... code
+});
+```
+
+A **callback** is a function you give to another function to be run when the other function is finished. The function you call (invoke) "calls back" by calling the function you gave it when it finishes.
+
+```javascript
+function tellMeWhenDone(callback) {
+  var a = 1000; // some work
+  var b = 2000; // some work
+  
+  callback(); // the callback, it runs the function you give it!
+}
+
+tellMeWhenDone(function() {
+  console.log('I am done!');
+});
+
+tellMeWhenDone(function() {
+  alert('I am done!');
+});
+```
+
+**.call(), .apply(), & .bind()**
+
+These functions allow you to control what the `this` keyword references.
+
+All functions are objects, and thus have some of their own methods available to them: `call()`, `apply()`, and `bind()`. All of these have to do with the `this` variable, and the arguments passed to the function as well.
+
+```javascript
+// remember that normally, the `this` keyword points to the object that contains
+// it; the person object.
+
+var person = {
+  firstName: 'John',
+  lastName: 'Doe',
+  getFullName: function() {
+    var fullName = this.firstName + ' ' + this.lastName;
+    return fullname;
+  }
+}
+
+var logName = function(lang1, lang2) {
+  console.log('Logged: ' + this.getFullName());
+  console.log('Arguments: ') + lang1 + ', ' + lang2);
+  console.log('-------------');
+}
+
+logName();
+// this points to the global object, so this will fail. logName is not an object
+// and the global object doesn't have the method getFullName.
+```
+
+```javascript
+// ...above code
+
+// below, notice logName is not invoked. It's being used as a function object:
+// the object you pass to `bind` will be the object that `this` refers to:
+
+var logPersonName = logName.bind(person);
+
+logPersonName(); // Logged: John Doe
+```
+
+In the above code, when the `bind` method is invoked, it actually is referencing the function object from `logName`, creating a copy so that whenever it's run, Js sees it was created with the `person` object, so `this` refers to `person`.
+
+Unlike `bind`, `call` actually executes / invokes the function, decides what the `this` variable should be, and the rest of the arguments are normal parameters you'd normally pass to the function you're using `call` on. No copy is created.
+
+```javascript
+logName.call(person, 'en', 'es');
+// invokes the function, first argument = `this` pointer
+
+logName.apply(person, ['en', 'es']);
+// Same as call, except takes an array for the arguments, not comma-separated values
+
+(function(lang1, lang2) {
+  console.log('Logged: ' + this.getFullName());
+  console.log('Arguments: ') + lang1 + ', ' + lang2);
+  console.log('-------------');
+}).apply(person, ['es', 'en']);
+// still works. This is just a function object & all functions can use apply
+```
+
+When would you use this in real life? Through function borrowing & currying. 
+
+**Function Currying:** *Remember*, `bind()` does not invoke the function. So what does giving it parameters do? It sets permanent values of the parameters when the copy is made. This could also be useful for setting default parameters for custom one-off functions that share similar functionality.
+
+```javascript
+// code above continued...
+
+// function borrowing:
+var person2 = {
+  firstName = 'Jane',
+  lastName = 'Doe',
+}
+
+console.log(person.getFullName.apply(person2)); // Jane Doe
+// this refers to `person2`, and apply invokes the function
+
+// function currying: with bind, you're creating a new copy of the function
+function multiply(a, b) {
+  return a * b;
+}
+
+var multiplyByTwo = multiply.bind(this, 2);
+// first parameter will always be a 2 in this copy of the function!
+
+console.log(multiplyByTwo(3));
+// 6; the parameter passed will be the second parameter
+```
+
+**Functional Programming**
+
+Thinking & coding in terms of functions. Some examples:
+
+```javascript
+var arr1 = [1, 2, 3];
+console.log(arr1);
+
+var arr2 = [];
+
+for (var i = 0; i < arr1.length; i++) {
+  arr2.push(arr1[i] * 2);
+}
+
+console.log(arr2); // [2, 4, 6]
+
+// This can be put as:
+function mapForEach(arr, fn) {
+  var newArray = [];
+  
+  for (var i = 0; i < arr.length; i++) {
+    newArray.push(
+      fn(arr[i]);
+    )
+  }
+  
+  return newArray;
+}
+```
+
+This abstracts the concept of looping over an array & doing something to each element, then returning a new array from that supplied function. So you can do:
+
+```javascript
+// ..code from above
+
+var arr3 = mapForEach(arr1, function(item) {
+  return item * 2;
+});
+
+console.log(arr3); // [2, 4, 6]
+```
+
+Combining some of the previous knowledge of `bind()`, how would you could you use this technique to check against a default value? Remember bind takes first the reference for what `this` will be, then the arguments of the function you're calling `bind` on:
+
+```javascript
+// ..code from above
+
+var checkPastLimit = function(limiter, item) {
+  return item > limiter;
+}
+
+var arr4 = mapForEach(arr1, checkPastLimit.bind(this, 1));
+// use `this` since you're not really using it.
+// creates copy of the function on the fly, sets 1 as the default argument
+
+console.log(arr4); // [false, true, true]
+```
+
+You might say that it's annoying that you have to call `bind()` all the time. It'd be nice to simply pass in the limiter in this case, so you don't always need to call `bind`:
+
+```javascript
+// Previous code for reference:
+function mapForEach(arr, fn) {
+  var newArray = [];
+  
+  for (var i = 0; i < arr.length; i++) {
+    newArray.push(
+      fn(arr[i]);
+    )
+  }
+  
+  return newArray;
+}
+
+var checkPastLimit = function(limiter) {
+  return function(limiter, item) {
+    return item > limiter;
+  }.bind(this, limiter);  // presets the limiter value, already using .bind()
+}
+
+var arr4 = mapForEach(arr1, checkPastLimit(1));
+console.log(arr4); // [false, true, true]
+```
+
+There is a lot happening in the above code. The `checkPastLimit` function object is passed in a limiter. `checkPastLimit` returns a function which uses that limiter as the default value using the `bind()` method. THEN this function is passed in to the `mapForEach` function & the work is done on the array, returning the boolean value after evaluating the expression. 
+
+Note that you should try not to mutate data - try to return something new. Or if you have to, do it as high up in these function chain as possible.
+
+**Functional Programming Part II:**
+
+
+
+
+
 
 
 
