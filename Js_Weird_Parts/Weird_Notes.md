@@ -1224,6 +1224,126 @@ Note that you should try not to mutate data - try to return something new. Or if
 
 **Functional Programming Part II:**
 
+*Underscore.js* - [underscore.js](http://underscorejs.org) :: You can learn a whole lot by looking through some open-source libraries, and this is one of them. If you look at the "annotated source" link, it will show comments & code side-by-side. This is very useful for looking at & learning advanced code. To use the library, include it first in your html code. Then in the `app.js` file, you literally use just the `_` character to use the library. I.E.: `_.map(// ... code);`.
+
+*lodash* - [lodash.com](http://www.lodash.com) :: also a good library.
+
+Try using some underscore.js library functionality. Download the underscore library first.
+
+**Object-Oriented JavaScript & Prototypal Inheritance**
+
+### Conceptual Aside: Classical vs Prototypal Inheritance
+
+*Inheritance* = One object gets access to the properties & methods of another object.
+
+**Classical Inheritance** = The way it's been done for a long time (most popular). It's very verbose. Sometimes can get very complicated / perplexing as programs get larger.
+
+**Prototypal Inheritance** = Flexible, extensible, and easy to understand. Simple. Not perfect, but can be very powerful & easy.
+
+**Understanding the Prototype**
+
+All objects in Js have a prototype property. It's simply a reference to another object. We'll call this `proto`. THAT object is its prototype. If you use the dot operator on an object and that object doesn't have the property, Js looks in the `proto` property (object) for the property you're looking for. It looks like it is on the object, but it's on the prototype. Similarly, that prototype object iteself can point to another prototype object, and so on. This is called the ***prototype chain***. This "chain" is relatively hidden to us, because we can simply type `obj.prop3` instead of `obj.proto.proto.prop3`. See an illustration of this [here](https://preview.c9users.io/patbrennan/demo-project/Js_Weird_Parts/js_prototype_chain.png?_c9_id=livepreview0&_c9_host=https://ide.c9.io).
+
+```javascript
+var person = {
+  firstName: 'Default',
+  lastName: 'Default',
+  getFullName: function() {
+    return this.firstName + ' ' + this.lastName;
+  }
+}
+
+var john = {
+  firstName: 'John',
+  lastName: 'Doe',
+}
+
+// NEVER use this in real-life!!! This is simply for illustrative purposes:
+john.__proto__ = person;          // john now inherits from person
+console.log(john.getFullName());  // John Doe
+console.log(john.firstName);      // John
+```
+
+Notice also that when `getFullName` was invoked, it knew what `this` referred to. It referred to `john`, not `person`. It's whatever object *originated* the call. Also, you don't get `Default` when logging the `firstName` because it goes up the prototype chain & finds it first in the `john` object, then stops.
+
+```javascript
+// ... code above
+
+var jane = {
+  firstName: 'Jane'
+}
+
+// REMEMBER: Don't ever do this in real life!
+jane.__proto__ = person;
+console.log(jane.getFullName());  // Jane Default
+```
+
+Since `jane` only has a firstName, the prototype chain runs & looks for each property until it finds it. That's why `default` is returned - it isn't contained in the `jane` object, so it looks up the chain & finds it in the `person` object, which is its prototype.
+
+**Everything is an Object (or a primitive)**
+
+**Reflection & Extend**
+
+*Reflection*: An object can look at itself, listing and changing its properties & methods. We can use this to implement *extend* patterns.
+
+```javascript
+var person = {
+  firstName: 'Default',
+  lastName: 'Default',
+  getFullName: function() {
+    return this.firstName + ' ' + this.lastName;
+  }
+}
+
+var john = {
+  firstName: 'John',
+  lastName: 'Doe',
+}
+
+// NEVER use this in real-life!!! This is simply for illustrative purposes:
+john.__proto__ = person;
+
+for (var prop in john) {  // loops over every member in the object
+  console.log(prop + ': ' + john[prop]);
+}
+// actually retrieves all property / methods through the prototype chain
+
+for (var prop in john) {
+  if (john.hasOwnProperty(prop)) {      // checks if prop is actually on `john`
+    console.log(prop + ': ' + john[prop]);
+  }
+}
+// only logs `firstName` & `lastName`.
+```
+
+If you use the `underscore.js` library you could easily extend objects:
+
+```javascript
+var jane = {
+  address: '111 Main St',
+  getFormalFullName: function() {
+    return this.lastName + ', ' + this.firstName;
+  }
+}
+
+var jim = {
+  getFirstName = function() {
+    return firstName;
+  }
+}
+
+_.extend(john, jane, jim); 
+// combines these objects' properties & adds them to 
+// the `john` object
+console.log(john); // has everything plus the jane & jim properties / methods
+```
+
+The above extension is different than the prototype chain. It physically placed the properties / methods from the supplied arguments into the `john` object. This `extend` could somewhat be thought of *multiple inheritance* in classical OOP.
+
+
+
+
+
 
 
 
