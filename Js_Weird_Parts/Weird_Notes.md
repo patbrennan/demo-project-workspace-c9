@@ -1340,6 +1340,64 @@ console.log(john); // has everything plus the jane & jim properties / methods
 
 The above extension is different than the prototype chain. It physically placed the properties / methods from the supplied arguments into the `john` object. This `extend` could somewhat be thought of *multiple inheritance* in classical OOP.
 
+## Section 6
+
+**Building Objects**
+
+Function constructors & the keyword `new`:
+
+```javascript
+function Person() {
+  this.firstName = 'John';
+  this.lastName = 'Doe';
+}
+
+var john = new Person();
+
+console.log(john);  // Person {firstName: "John", lastName: "Doe"}
+```
+
+`new` is actually just an operator. It has very high precedence. Immediately, an empty object is created when using it. It then invokes the function. `this` is created in the execution context, and it points to that new, empty object of type `Person`. As long as the function doesn't return an explicit value, Js will return that empty object. This is called a *function constructor*. (just a normal function that is used to construct objects)
+
+But what if you wanted to instantiate more `Person` objects with different names? Remember that function constructors are just functions, and can take parameters:
+
+```javascript
+function Person(firstName, lastName) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+}
+
+var jane = new Person('Jane', 'Smith');
+```
+
+What about setting the prototype for function constructors?
+
+**Function Constructors & `.prototype`**
+
+When you use the function constructor, it sets the prototype for you. Recall above that when we logged it to the console, a `Person` object was created. Remember also that all functions get a special property (since they are objects): *prototype*. This starts out as an empty object, and isn't used unless you use a function constructor w/the `new` operator. This IS NOT the prototype OF the function, it's the prototype of any objects CREATED if you're using it as a function constructor.
+
+```javascript
+// ...code above
+Person.prototype // starts as empty object
+
+Person.prototype.getFullName = function() {
+  return this.firstName + ' ' + this.lastName;
+}
+
+var patrick = new Person('Patrick', 'Brennan'); // has the getFullName method available
+// all Person objects point to this prototype object & have access to all the
+// properties & methods in it.
+
+console.log(patrick.getFullName);  // Patrick Brennan
+```
+
+You can even add things to your prototype on the fly later using the same syntax as above. During the lookup chain, it looks in the object itself first, then up the prototype chain in the prototype for any property or methods. 
+
+**NOTE:** But why wouldn't you add the `getFullName` function in the `Person` function constructor? Because: Remember that objects take up space in memory. Anything you add takes up memory. If you added these to every single object, then each object would have a copy of that function, and that would take up a LOT of memory on scaled programs. With the methods in a prototype, they only need 1 copy to be used. This saves memory space.
+
+### Dangerous Aside:
+
+
 
 
 
