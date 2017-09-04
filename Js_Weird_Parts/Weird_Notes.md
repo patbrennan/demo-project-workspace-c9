@@ -1395,7 +1395,160 @@ You can even add things to your prototype on the fly later using the same syntax
 
 **NOTE:** But why wouldn't you add the `getFullName` function in the `Person` function constructor? Because: Remember that objects take up space in memory. Anything you add takes up memory. If you added these to every single object, then each object would have a copy of that function, and that would take up a LOT of memory on scaled programs. With the methods in a prototype, they only need 1 copy to be used. This saves memory space.
 
+### Dangerous Aside: `new` & functions:
+
+Recall that using `new` is how you use a function constructor. It creates an empty object, points `this` points to that object, and if you don't return something explicitly, it will return the created object.
+
+*However*, if you *omit* the `new` keyword, it will still execute the function! The difference is that most likely it will return `undefined`, which means that some objects that you are trying to create may just be set to that. Obviously, you'll get an error if you try to use any methods on `undefined`.
+
+To avoid any unnecessary errors, follow this convention:
+
+> Any function we intend to be a function constructor, we use a **capital letter** as the first letter of the function name.
+
+### Conceptual Aside: Built-in Function Constructors
+
+Example:
+
+```javascript
+var a = new Number(3);
+a // Number {[[PrimitiveValue]]: 3} - this is an object! Note the capital `N`
+a.toFixed(2) // "3.00" - has Number properties, prototype is `Number`
+```
+
+The same is true with `String`, `Date`, `Boolean`, etc. They look like you're creating primitives, but you're actually creating *objects* that store a primitive value. This can be somewhat useful if you're extending features of Js's core feature set.
+
+Example - if you want to add some additional functionality to Strings:
+
+```javascript
+String.prototype.isLengthGreaterThan = function(limit) {
+  return this.length > limit;
+}
+
+console.log("John".isLengthGreaterThan(3)); // true
+
+Number.prototype.isPositive = function() {
+  return this > 0;
+}
+
+3.isPositive(); // Uncaught SyntaxError: Unexpected token ILLEGAL
+```
+
+Note that Js won't convert a `Number` to an object automatically, which is why the Number code above throws an error. BUT using `var a = new Number(3)` works, because it's a function constructor, which creates a new object. This can get quite confusing!
+
 ### Dangerous Aside:
+
+**Built-In Function Constructors**
+
+By using these built-ins for creating primitives, you aren't *really* creating primitives. **It's best to NOT use built-in function constructors.** Use literals & the actual primitive values. Think about something like `===` comparing a primitive `n` & `new Number(n)`. One is a primitive, and one an object.
+
+**TIP**: 
+
+> check out [momentjs](http://momentjs.com/) for working with `Date`s.
+
+Remember that `var a = new Number(3)` and `var b = Number(3)` are not the same thing. One is returning an object, and the other is simply invoking a function.
+
+### Dangerous Aside: Arrays & `for...in` loops
+
+```javascript
+var arr = ['John', 'jane', 'Jim'];
+
+for (var prop in arr) {
+  console.log(prop + ': ' + arr[prop]);
+}
+
+// 0: John
+// 1: Jane
+// 2: Jim
+```
+
+Remember that arrays are actually objects. The `0, 1, 2` are property names & the strings the values. But what if somewhere in a framework or extended code you have something like `Array.prototype.myCustomFeature = 'COOL!';`? The new output would be:
+
+```javascript
+// 0: John
+// 1: Jane
+// 2: Jim
+// myCustomFeature: COOL!
+```
+
+In the case of Arrays, *DO NOT use `for..in` loops*. It's not safe - just use the standard `for` loop. Generally, the `for..in` loop is avoided with objects altogether.
+
+**Object.create & Pure Prototypal Inheritance**
+
+Function constructors are simply trying to mimmick class inheritance from other languages. It was Js's way to make the syntax more familiar, even though Js uses prototypal inheritance. Many think, however, that we should simply embrace the prototypal inheritance & use that way to create objects & their children.
+
+```javascript
+var person = {
+  firstname: 'Default',
+  lastname: 'Default',
+  greet: function() {
+    return 'Hi ' + this.firstname;
+  },
+}
+
+var john = Object.create(person);
+john.firstname = 'John';
+john.lastname = 'Doe';
+console.log(john); // Object {...} __proto__: Object
+john.greet(); // Hi, John
+```
+
+The above code is pure prototypal inheritance. You simply make objects, and create new objects from them, pointing to other objects as their prototype. If you want to *define* a new type of object / prototype, you *create* a new one, then use `Object.create(objName)` - That becomes the basis for all others. Subsequently, you override the properties on specific ones, and can add new methods / properties on the fly.
+
+BUT what if you're on a project that needs to support older browswers / environments that don't support `Object.create()`? 
+
+Use **polyfill**: code that adds a feature which the engine *may* lack. It checks if the engine has the feature & if not, writes the code that will allow the older environment to use the new feature.
+
+Example (would be added to above code):
+
+```javascript
+// polyfill
+if (!Object.create) {
+  Object.create = function(o) {
+    if (arguments.length > 1) {
+      throw new Error('Object.create implementation only accepts the first parameter');
+    }
+    function F() {}
+    F.protoype = o;
+    return new F();
+  };
+}
+```
+
+The above code adds the `create` method on the global object if one doesn't exist already. It creates an empty function, and sets the prototype equal to the object you pass in. Then it uses the `new` keyword to return an object, which is the result of the `F()` function. This is exactly what `Object.create` is supposed to do.
+
+**ES6 & Classes**:
+
+In other programming languages, `class` is not an object. It's just a template that tells you what an object should look like & how it should behave. With Js, `this` is an **object**. The `class` keyword is just that - a keyword. 
+
+You should still be wary about using the `new` keyword. It's just an attempt to appease others coming from other languages. Under the hood, this all still works the same way as Js always worked. It's all *syntactic sugar*.
+
+```javascript
+class Person {
+  constructor(firstname, lastname) {
+    this.firstname = firstname;
+    this.lastname = lastname;
+  }
+  
+  greet() {
+    return 'Hi ' + firstname;
+  }
+}
+
+var john = new Person('John', 'Doe');
+
+// setting the prototype
+class InformalPerson extends Person {
+  constructor(firstname, lastname) {
+    super(firstname, lastname);
+  }
+  
+  greet() {
+    return 'Yo ' + firstname;
+  }
+}
+```
+
+## Section 7
 
 
 
