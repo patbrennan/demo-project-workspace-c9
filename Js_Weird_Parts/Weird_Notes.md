@@ -1548,7 +1548,74 @@ class InformalPerson extends Person {
 }
 ```
 
-## Section 7
+## Section 7: Odds & Ends
+
+**Initialization**
+
+Sometimes large object initialization can confuse people who haven't seen it before. But it can be useful for building prototypes. This could also be used when there isn't a db or API ready to test an interface. 
+
+```javascript
+var people = [
+  {
+    // the john object
+    firstname: 'john',
+    lastname: 'doe',
+    addresses: [
+      '111 main st.',
+      '222 third st'
+    ]
+  },
+  {
+    // the jane object
+    firstname: 'jane',
+    lastname: 'doe',
+    addresses: [
+      '333 main st.',
+      '444 fifth st'
+    ],
+    greet: function() {
+      return 'Hello!';
+    }
+  },
+  // even more code...
+]
+```
+
+**`typeof`, `instanceof`, and figuring out what something is**:
+
+`typeof a` tells you waht type of something it is (`number`, `object`, `string`). NOTE that `typeof [array]` returns `object`. Instead, you could call:
+
+`Object.prototype.toString.call(array); // [object Array]` - better, but not perfect.
+
+`a instanceof Type` = will tell boolean if an object is an instance of that object type, looking through the prototype / object chain. Example: 
+
+```javascript
+function Person(name) {
+  this.name = name;
+}
+
+var e = new Person('Jane');
+console.log(e instanceof Person); // true
+```
+
+`typeof null` = `object` (a bug in Js for a very long time - be careful when things might evaluate to `null`!).
+
+**Strict Mode**:
+
+When you type `"use strict";` you're telling Js to use stricter rules when parsing the code. This must be at the top of the file **or** functions individually. 
+
+Not every Js engine implements this the same way, so it's not 100% reliable. 
+
+*NOTE* that if you include this in one file of many that are combined & minified, the entire file will use the strict mode, which may not be what you intended. Check the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode) for the link to see what exactly it will affect.
+
+**Learning From Other's Good Code**:
+
+You should go into other open-source projects (frameworks, libraries, etc) & learn from other peoples' good code! They're usually in an `src` folder. Find an element in there you find *interesting* or *useful*, and explore it, and learn it.
+
+## Section 8 - Deep Dive into jQuery
+
+
+
 
 
 
