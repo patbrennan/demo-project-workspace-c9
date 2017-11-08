@@ -1,3 +1,5 @@
+TO RUN APPLICATIONS IN c9: `ruby app.rb -p $PORT -o $IP`
+
 [//]: # (Notes on studying the Ruby Pickaxe by Dave Thomas)
 
 Need to explore further for better understanding:

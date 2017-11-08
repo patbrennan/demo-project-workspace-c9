@@ -1,0 +1,10 @@
+{
+  "globals": {
+    "$": true,
+    "Handlebars": true,
+    "document": true,
+    "window": true,
+    "XMLHttpRequest": true,
+    "localStorage": true,
+  }
+}
