@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport"content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"href="clip.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+  </head>
+  <body>
+    <main>
+      
+      <div class="code">
+        
+        <code class=" language-javascript" id="js-1"><span class="keyword">var</span> pointA <span class="operator">=</span> <span class="punctuation">{</span>
+  x<span class="punctuation">:</span> <span class="number">30</span><span class="punctuation">,</span>
+  y<span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span>
+
+  onXAxis<span class="punctuation">:</span> <span class="keyword">function</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+    <span class="keyword">return</span> <span class="keyword">this</span><span class="punctuation">.</span>y <span class="operator">===</span> <span class="number">0</span><span class="punctuation">;</span>
+  <span class="punctuation">}</span><span class="punctuation">,</span>
+
+  onYAxis<span class="punctuation">:</span> <span class="keyword">function</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+    <span class="keyword">return</span> <span class="keyword">this</span><span class="punctuation">.</span>x <span class="operator">===</span> <span class="number">0</span><span class="punctuation">;</span>
+  <span class="punctuation">}</span><span class="punctuation">,</span>
+
+  distanceToOrigin<span class="punctuation">:</span>  <span class="keyword">function</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+    <span class="keyword">return</span> Math<span class="punctuation">.</span><span class="function">sqrt</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="keyword">this</span><span class="punctuation">.</span>x <span class="operator">*</span> <span class="keyword">this</span><span class="punctuation">.</span>x<span class="punctuation">)</span> <span class="operator">+</span> <span class="punctuation">(</span><span class="keyword">this</span><span class="punctuation">.</span>y <span class="operator">*</span> <span class="keyword">this</span><span class="punctuation">.</span>y<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+
+pointA<span class="punctuation">.</span><span class="function">distanceToOrigin</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>      <span class="comment" spellcheck="true">// 50</span>
+pointA<span class="punctuation">.</span><span class="function">onXAxis</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>               <span class="comment" spellcheck="true">// false</span>
+pointA<span class="punctuation">.</span><span class="function">onYAxis</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>               <span class="comment" spellcheck="true">// false</span>
+</code>
+        <button class="copy" data-clipboard-target="#js-1">Copy Code</button>
+      </div>
+      
+       <div class="code">
+        
+        <code class=" language-javascript" id="js-2"><span class="keyword">var</span> Point <span class="operator">=</span> <span class="keyword">function</span><span class="punctuation">(</span>x<span class="punctuation">,</span> y<span class="punctuation">)</span> <span class="punctuation">{</span>            <span class="comment" spellcheck="true">// capitalized constructor name as a convention</span>
+  <span class="keyword">this</span><span class="punctuation">.</span>x <span class="operator">=</span> x <span class="operator">||</span> <span class="number">0</span><span class="punctuation">;</span>                      <span class="comment" spellcheck="true">// initialize states with arguments</span>
+  <span class="keyword">this</span><span class="punctuation">.</span>y <span class="operator">=</span> y <span class="operator">||</span> <span class="number">0</span><span class="punctuation">;</span>                      <span class="comment" spellcheck="true">// 0 as default value</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+
+Point<span class="punctuation">.</span>prototype<span class="punctuation">.</span>onXAxis <span class="operator">=</span> <span class="keyword">function</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>  <span class="comment" spellcheck="true">// shared behaviors added to constructor's prototype property</span>
+  <span class="keyword">return</span> <span class="keyword">this</span><span class="punctuation">.</span>y <span class="operator">===</span> <span class="number">0</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+Point<span class="punctuation">.</span>prototype<span class="punctuation">.</span>onYAxis <span class="operator">=</span> <span class="keyword">function</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>  <span class="comment" spellcheck="true">// these methods are added one by one</span>
+  <span class="keyword">return</span> <span class="keyword">this</span><span class="punctuation">.</span>x <span class="operator">===</span> <span class="number">0</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+Point<span class="punctuation">.</span>prototype<span class="punctuation">.</span>distanceToOrigin <span class="operator">=</span> <span class="keyword">function</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+  <span class="keyword">return</span> Math<span class="punctuation">.</span><span class="function">sqrt</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="keyword">this</span><span class="punctuation">.</span>x <span class="operator">*</span> <span class="keyword">this</span><span class="punctuation">.</span>x<span class="punctuation">)</span> <span class="operator">+</span> <span class="punctuation">(</span><span class="keyword">this</span><span class="punctuation">.</span>y <span class="operator">*</span> <span class="keyword">this</span><span class="punctuation">.</span>y<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="keyword">var</span> pointA <span class="operator">=</span> <span class="keyword">new</span> <span class="class-name">Point</span><span class="punctuation">(</span><span class="number">30</span><span class="punctuation">,</span> <span class="number">40</span><span class="punctuation">)</span><span class="punctuation">;</span>     <span class="comment" spellcheck="true">// use new to create objects</span>
+<span class="keyword">var</span> pointB <span class="operator">=</span> <span class="keyword">new</span> <span class="class-name">Point</span><span class="punctuation">(</span><span class="number">20</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+pointA <span class="keyword">instanceof</span> <span class="class-name">Point</span><span class="punctuation">;</span>            <span class="comment" spellcheck="true">// use instanceof to check type</span>
+pointB <span class="keyword">instanceof</span> <span class="class-name">Point</span><span class="punctuation">;</span>
+
+pointA<span class="punctuation">.</span><span class="function">distanceToOrigin</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>          <span class="comment" spellcheck="true">// 50</span>
+pointB<span class="punctuation">.</span><span class="function">onXAxis</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>                   <span class="comment" spellcheck="true">// true</span>
+</code>
+        
+        <button class="copy" data-clipboard-target="#js-2">Copy Code</button>
+      </div>
+      
+    </main>
+    <script src="clip.js"></script>
+  </body>
+</html>

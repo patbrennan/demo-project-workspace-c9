@@ -26,3 +26,18 @@ function parsePrices($elementsArray) {
 
 parsePrices([$outbounds, $inbounds]);
 console.log(priceTable);
+
+// NOTE: Use Js's FormData() to create & submit a form:
+function sendForm() {
+  var formData = new FormData();
+  formData.append('username', 'johndoe');
+  formData.append('id', 123456);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/server', true);
+  xhr.onload = function(e) { ... };
+
+  xhr.send(formData);
+}
+
+// Essentially, we're just dynamically creating a <form> and tacking on <input> values to it by calling the append method.
