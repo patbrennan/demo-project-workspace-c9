@@ -19,8 +19,6 @@ Rails.application.routes.draw do
     end
   end
 
-
-
   resources :hashtags, only: [:show]
 
   get "/:username", to: 'users#show', as: 'user'

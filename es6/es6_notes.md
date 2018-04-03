@@ -17,12 +17,12 @@ Example cases:
 
 Example: Coding interview question - Balanced Parens
 
-Tell us if there are balanced parentheses given a string. 
+Tell us if there are balanced parentheses given a string.
 
 ```javascript
 function balancedParens(string) {
   var arr = string.split("");
-  
+
   return !arr.reduce(function(prev, char) {
     if (prev < 0) { return prev; }
     if (char === "(") { return ++prev; }
@@ -68,7 +68,7 @@ hourlyWage = 45;
 
 A developer's intentions are much clearer & easier to understand when reading code. It's obvious when looking at a glance what is mutating and what is not.
 
-### Template Strings** / **Template Literals** / **String Interpolation**: 
+### Template Strings** / **Template Literals** / **String Interpolation**:
 
 This is just a nicer way of joining together Js variables into a string. Instead of using any quotes, replace them with backticks (`).
 
@@ -174,7 +174,7 @@ function createBookShop(inventory) {
     inventoryValue: function() {
       return this.inventory.reduce((total, book) => total + book.price, 0);
     },
-    
+
     priceForTitle: function(title) {
       return this.inventory.find( book => book.title === title).price;
     },
@@ -188,7 +188,7 @@ function createBookShop(inventory) {
     inventoryValue() {
       return this.inventory.reduce((total, book) => total + book.price, 0);
     },
-    
+
     // When you have a value that is a function, you can omit `function` and `:`
     priceForTitle(title) {
       return this.inventory.find( book => book.title === title).price;
@@ -217,7 +217,7 @@ function makeAjaxRequest(url, method) {
   if (!method) {
     method = "GET";
   }
-  
+
   // logic to make request
 }
 
@@ -293,7 +293,7 @@ function validateShoppingList(...items) {
   if (!items.includes("milk")) {
     return [ "milk", ...items ];
   }
-  
+
   return items;
 }
 
@@ -418,7 +418,7 @@ points.map(([x, y]) pair => { // destructure the data as arguments to the functi
 ```
 **PROBLEM SET:**
 
-This one is probably the hardest exercise in the entire course!  
+This one is probably the hardest exercise in the entire course!
 
 Use array destructuring, recursion, and the rest/spread operators to create a function 'double' that will return a new array with all values inside of it multiplied by two.  Do not use any array helpers! Sure, the map, forEach, or reduce helpers would make this extremely easy but give it a shot the hard way anyways :)
 
@@ -438,11 +438,11 @@ const numbers = [1, 2, 3];
 
 function double([ num1, ...rest ]) {
   let doubled = [];
-  
+
   if (num1) {
     doubled = [ ...doubled, num1 * 2, ...double(rest) ];
   }
-  
+
   return doubled;
 }
 
@@ -453,10 +453,10 @@ const double = ([ number, ...rest ]) => (rest.length ? [number*2, ...double(rest
 
 // solution:
 const numbers = [1,2,3];
- 
+
 function double([num, ...rest]) {
     if (!num) { return []; }
-    
+
     return [num * 2, ...double(rest) ];
 }
 ```
@@ -510,7 +510,7 @@ class Toyota extends Car {
     super(options);       // calls Car's constructor method first with params
     this.color = options.color;
   }
-  
+
   honk() {
     // super(); - could also call Car's same method name first
     return "beep";
@@ -526,6 +526,221 @@ toyo.drive();     // vroom
 ```
 
 When would we use classes? ALL THE DAMNED TIME!
+
+### Generators
+
+More ways to iterate through collections
+
+`for...of` = iterate through arrays of data. These have a tie into generators. Other helper methods are recommended for normal use. Stay tuned to see how these can tie together...
+
+```javascript
+const colors = ['red', 'green', 'blue'];
+
+for (let color of colors) {
+  console.log(color);
+}
+```
+
+**Generators**: can be difficult to understand. A function that can be entered & exited multiple times. Normally, function run & return something & are done. With generators, we can run SOME code, return a value, then return to the function at the same place we left it.
+
+Example syntax:
+
+```javascript
+function* numbers() { // notice the asterisk. It can also be `function *funcName`
+  yield;
+}
+
+const gen = numbers();
+gen.next();   // {"done": false}
+gen.next();   // {"done": true}
+```
+
+An analogy of generators:
+
+You're sitting there, hungry, so you decide to eat, but you need to get the food from the store.
+
+- Start walking to the store
+- Still walking...
+- At the store. Going in w/some money...
+  - Transition to the sidewalk into the store, with the money
+  - Inside the store, you walk, check prices, buy some groceries
+- Go back out of the store to the sidewalk. Now instead of cash, you have groceries.
+- Walk back home on the sidewalk.
+
+Note the transition from money into the store, then coming back out w/groceries...
+
+```javascript
+function* shopping() {
+  // stuff on the sidewalk
+
+  // walking down the sidewalk
+
+  // go into the store w/cash
+  const stuffFromStore = yield 'cash';
+
+  // walking back home
+  return stuffFromStore // final value = "groceries"
+}
+
+// stuff in the store
+// No code is invoked here! Important to know. It's just returning an object!
+const gen = shopping();
+
+// First time this is called is when the function begins execution.
+gen.next(); // leaving our house
+// walked into store
+// up & down isles
+// purchase our stuff
+
+gen.next('groceries'); // leaving the store w/groceries
+```
+
+As a further example, say you wanted to make a stop on your way home at the dry cleaner's. You can use multiple `yield`s inside the generator function. Note that you need to add another `gen.next();` in order to return execution back to the generator function.
+
+**So why do we use this?**
+
+
+
+```javascript
+function* colors() {
+  yield "red";
+  yield "blue";
+  yield "green";
+}
+
+const gen = colors();
+// gen.next(); // execute code
+// gen.next(); // value red, done: false
+// gen.next(); // value blue, done: false
+// gen.next(); // value green, done: true
+
+const myColors = [];
+for (let color of colors()) { // executed colors right away
+  myColors.push(color);       // execute this code each time there's a yield
+}
+
+myColors; // ["red", "green", "blue"]
+```
+
+In the code above, you don't have to worry about the `.next()` call or anything. It just works. This structure allows us to iterate through **any type of data structure that we want**.
+
+Practical Example: We want to interate over particular properties of an object, not all of them.
+
+```javascript
+// Object that represents engineering team
+const engineeringTeam = {
+  size: 3,
+  department: "Engineering",
+  lead: "Jill",
+  manager: "Alex",
+  engineer: "Dave",
+};
+
+// We want to iterate through all different employees (not other properties).
+function* TeamIterator(team) {
+  yield team.lead;
+  yield team.manager;
+  yield team.engineer;
+}
+
+const names = [];
+for (let name of TeamIterator(engineeringTeam)) {
+  names.push(name);
+}
+// ["Jill", "Alex", "Dave"]
+```
+
+### Combining multiple generators together - delegation of generators.
+
+Going w/the example above, imagine we now have another property on the engineeringTeam object called `TestingTeam`, that has it's own `lead` & `tester`. We still want to be able to get a list of all employee names.
+
+```javascript
+const testingTeam = {
+  lead: "Amanda",
+  tester: "Bill",
+};
+
+const engineeringTeam = {
+  testingTeam, // same as testingTeam: testingTeam. Convention is to keep at top of obj
+  size: 3,
+  department: "Engineering",
+  lead: "Jill",
+  manager: "Alex",
+  engineer: "Dave",
+};
+
+// How might we combine these generator function to allow us to use 1 for..of loop?
+// We use what's called generator delegation
+function* TeamIterator(team) {
+  yield team.lead;
+  yield team.manager;
+  yield team.engineer;
+
+  const testingTeamGen = TestingTeamIterator(team.testingTeam);
+  yield* testingTeamGen;
+}
+
+function* TestingTeamIterator(team) {
+  yield team.lead;
+  yield team.tester;
+}
+
+const names = [];
+for (let name of TeamIterator(engineeringTeam)) {
+  names.push(name);
+}
+// ["Jill", "Alex", "Dave", "Amanda", "Bill"]
+```
+
+The `yield*` syntax is saying "I'm inside a generator, and there is another generator with yield statements to see." The `yield*` is like a "trap door" that passes execution to the other generator you specify.
+
+### Cleaning Up the Generator Code: symbol.interator
+
+**Symbol Interator**: a tool that teaches objects how to respond to the `for..of` loop.
+
+```javascript
+const testingTeam = {
+  lead: "Amanda",
+  tester: "Bill",
+  [Symbol.iterator]: function* () { // teach this object how to iterate using `for..of`
+    yield this.lead;
+    yield this.tester;
+  },
+};
+
+const engineeringTeam = {
+  testingTeam, // same as testingTeam: testingTeam. Convention is to keep at top of obj
+  size: 3,
+  department: "Engineering",
+  lead: "Jill",
+  manager: "Alex",
+  engineer: "Dave",
+  [Symbol.iterator]: function* () {
+    yield this.lead;
+    yield this.manager;
+    yield this.engineer;
+    yield* this.testingTeam; // better syntax, more concise. for..of falls into that object
+  },
+};
+
+// don't need TeamIterator anymore!
+// don't need TestingTeamIterator anymore!
+
+const names = [];
+for (let name of engineeringTeam) {
+  names.push(name);
+}
+// ["Jill", "Alex", "Dave", "Amanda", "Bill"]
+```
+
+Notice the `[Symbol.iterator]` key above. With ES6, we can use *key interpolation* by wrapping a key with `[]`. What that does is create a dynamic key name. Then, using the `function*` makes it a generator function inside the object, so it knows how to handle a `for..of` loop.
+
+
+
+
+
+
+
 
 
 
