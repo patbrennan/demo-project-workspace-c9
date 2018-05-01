@@ -68,7 +68,7 @@ hourlyWage = 45;
 
 A developer's intentions are much clearer & easier to understand when reading code. It's obvious when looking at a glance what is mutating and what is not.
 
-### Template Strings** / **Template Literals** / **String Interpolation**:
+### Template Strings / **Template Literals** / **String Interpolation**:
 
 This is just a nicer way of joining together Js variables into a string. Instead of using any quotes, replace them with backticks (`).
 
@@ -734,6 +734,102 @@ for (let name of engineeringTeam) {
 ```
 
 Notice the `[Symbol.iterator]` key above. With ES6, we can use *key interpolation* by wrapping a key with `[]`. What that does is create a dynamic key name. Then, using the `function*` makes it a generator function inside the object, so it knows how to handle a `for..of` loop.
+
+### EX: Iterating through a DOM tree
+
+This type of construct can be very useful for iterating through the DOM with the use of recursion. Take a nested comment structure on a site like Reddit, for example. We may want to iterate through a DOM with a tree that has an arbitrary depth:
+
+> **NOTE**: array helpers / iterators DO NOT WORK inside generator functions. Whenever iterating through a collection, you need to use a `for..of` loop in a generator again.
+
+```javascript
+class Comment {
+  constructor(content, children) {
+    this.content = content;
+    this.children = children;
+  }
+
+  *[Symbol.iterator]() {  // improved obj literal syntax for method inside class
+    yield this.content;
+    for (let child of this.children) {
+      yield* child;
+    }
+  }
+}
+
+const children = [
+  new Comment("good comment", []);
+  new Comment("bad comment", []);
+  new Comment("meh", []);
+];
+const tree = new Comment("great post!", children);
+
+let values = [];
+for (let value of tree) {
+  values.push(value);
+}
+
+console.log(values); // Contains all the comments.
+```
+
+### Promises
+
+Promises have been implemented by many 3rd-party libraries for a long time in Js, but now ES6 implements them natively. Remember that Js will execute code line-by-line, one after another *without waiting*. In cases where there might be long-executing code (like an AJAX request to an external URL), code immediately after that AJAX request would normally execute right away. This can cause undesired behaviors, like logging a `null` value of the AJAX return, since that request & variable assignment takes longer & the variable value hasn't yet been assigned.
+
+This is what promises resolve. We want to access the result of a long-running operation after it's finished, and only then.
+
+First, some terminology: Promise states:
+
+- `unresolved`: waiting for something to finish (default)
+- `resolved`: something finished & all went OK (success)
+  - `then`: keyword to execute a callback(s) (is a property on an object)
+- `rejected`: something finished, but something went bad (maybe request didn't execute, etc)
+  - `catch`: keyword to execute callback(s)
+
+Some example code:
+
+```javascript
+// create a new promise
+// we decide when it's resolved or rejected w/two automatically provided
+// arguments that are functions we can call.
+const promise = new Promise( (resolve, reject) => {
+  const request = new XMLHTTPRequest();
+  // make request
+  request.onLoad = () => {
+    resolve();
+  };
+});
+// Promise {<pending>}__proto__: Promise[[PromiseStatus]]: "pending"[[PromiseValue]]: undefined
+
+// use `then` to execute one or more callbacks when Promise is "resolved"
+promise
+  .then( () => {  // could also be written as: then(() => console.log("this"))
+    console.log("I'm finished.");
+  }).then( () => {
+    console.log("I ran, too, in order.");
+  }).catch( () => {
+    console.log("uh oh. rejected.");
+  });
+```
+
+The most common way to use Promises is with the `fetch` handler in ES6. There are several complaints about this interface, so experienced devs recommend using a different AJAX library to handle requests.
+
+```javascript
+const url = "https://jsonplaceholder.typicode.com/posts/";
+
+fetch(url) // returns a promise object that we can register .then/.catch on
+  .then(response => response.json())
+  // there is some amount of data passed to .then (response object)
+  // doesn't contain the actual data OF the response, just the resp obj
+  // You must manipulate the response to get the data.
+  .then(data => console.log(data)) // do something w/data
+  .catch(error => console.log(error)); // do something w/error data
+```
+
+> One of the big complaints, other than having to call `.json()` on the response object, is that when a request fails, the `fetch` interface DOES NOT enter the `.catch` method & execute code inside it. This is dissimilar to almost every other AJAX library. The only time it will enter `catch` is if the network request completely FAILS.
+
+
+
+
 
 
 
